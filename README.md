@@ -1,5 +1,11 @@
 # Ask The Laravel Docs
 
+
+
+https://user-images.githubusercontent.com/24755643/236369430-ebf7c77d-38cd-4ce4-80a2-c39dfefedf93.mp4
+
+
+
 After I released a section on my blog where you can ask the Laravel docs questions (https://cosme.dev/ask-docs) using OpenAI's API and the Laravel documentation I got a lot of messages asking me how did I do it and questions about how they can add something similar to their existing projects.
 
 So I decided to make this open source repo showing how to do something similar in pure PHP (the original website implementation on my website was made with a combination of php, python and golang).
