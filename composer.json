@@ -1,0 +1,29 @@
+{
+    "name": "cosmedev/askdocs",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "CosmeDev\\AskDocs\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cosme Escobedo",
+            "email": "cosme@cosme.dev"
+        }
+    ],
+    "require": {
+        "macfja/redisearch": "^2.2",
+        "predis/predis": "^2.1",
+        "openai-php/client": "^0.4.2",
+        "symfony/http-client": "^6.2",
+        "nyholm/psr7": "^1.8",
+        "macroman/terminal-progress-bar": "^0.1.7",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
