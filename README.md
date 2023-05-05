@@ -112,6 +112,6 @@ After we have the vector database with our documents in them we can start asking
 That is the basic flow for the first question. But if you ask multiple questions you will notice that the chat "remembers" what you typed previously, this is not a feature of the OpenAI API and instead is done by storing the question and responses in an array and asking OpenAI to generate a stand alone question (you can see the [code here](https://github.com/cosmeoes/ask-the-laravel-docs/blob/c4b7891bdcb8dc07c72535964ae758270be1a7bb/src/AskDocs.php#L47-L66)). We then use that question to query the vector database and use that to get OpenAI's response.
 
 
-And that's it, that's the gist of how it all works, you probably should read this as you read the code and it will all make more sense, if you have any other questions you can ask me on tweeter [@cosmeescobedo](https://twitter.com/cosmeescobedo) or send me an email at cosme@cosme.dev
+And that's it, that's the gist of how it all works, you probably should read this as you read the code and it will all make more sense, if you have any other questions you can ask me on twitter [@cosmeescobedo](https://twitter.com/cosmeescobedo) or send me an email at cosme@cosme.dev
 
 
