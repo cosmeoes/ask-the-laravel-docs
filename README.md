@@ -96,20 +96,20 @@ First let's start on how I insert the Laravel docs into the vector database:
 
 2. The second step is breaking the database into smaller chunks. The reason for this is because the OpenAI API has a character limit when we make a request so we can't send the whole documentation at the same time.
 
-The way I decided to do this is by breaking it into each documentation section. In other words, every time there is a header or subheader in the docs I split it. In this step I also build the url for that section so we can display them as the "Sources:" links after we show the OpenAI response.
+    The way I decided to do this is by breaking it into each documentation section. In other words, every time there is a header or subheader in the docs I split it. In this step I also build the url for that section so we can display them as the "Sources:" links after we show the OpenAI response.
 
-2. The third step is converting each one of those sections into embeddings and storing them into the index. We get the embeddings sending the text to the embeddings endpoint of the OpenAI API. It returns an array of floating point numbers. I send 10 sections at a time to the OpenAI API to make it faster. I choose 10 because I saw that in an example and it worked for this use case. But its not a set number and you can experiment with it.
+3. The third step is converting each one of those sections into embeddings and storing them into the index. We get the embeddings sending the text to the embeddings endpoint of the OpenAI API. It returns an array of floating point numbers. I send 10 sections at a time to the OpenAI API to make it faster. I choose 10 because I saw that in an example and it worked for this use case. But its not a set number and you can experiment with it.
 
-To store this in redis you have to convert them to a byte string so I do that using the `pack()` function. (See the `helpers.php` file). Then I put those bytes into `content_vector` field on each documentation section item and store them with `hset` and the key `doc:{index}` where `index` is just the index of the iteration. This is pretty specific to redis, so if you use another vector database you'll probably have to follow the documentation to know how you should store them.
+    To store this in redis you have to convert them to a byte string so I do that using the `pack()` function. (See the `helpers.php` file). Then I put those bytes into `content_vector` field on each documentation section item and store them with `hset` and the key `doc:{index}` where `index` is just the index of the iteration. This is pretty specific to redis, so if you use another vector database you'll probably have to follow the documentation to know how you should store them.
 
 After we have the vector database with our documents in them we can start asking questions, the question/response flow is the following:
 
 1. When a user inputs text we send that text to OpenAI embeddings endpoint to generate the embeddings of that text.
 2. With those embeddings we query the database to get the 4 most similar documents (as in semantically similar not text search similar).
-3. We take the text from those documents and create a string that contains both the documentation text and the question (see: https://github.com/cosmeoes/ask-the-laravel-docs/blob/c4b7891bdcb8dc07c72535964ae758270be1a7bb/src/AskDocs.php#L98-L113)
+3. We take the text from those documents and create a string that contains both the documentation text and the question (you can see the [code here](https://github.com/cosmeoes/ask-the-laravel-docs/blob/c4b7891bdcb8dc07c72535964ae758270be1a7bb/src/AskDocs.php#L98-L113))
 4. We send that text to OpenAI chat endpoint, in this case we use `gpt-3.5-turbo` as the model.
 
-That is the basic flow for the first question. But if you ask multiple questions you will notice that the chat "remembers" what you typed previously, this is not a feature of the OpenAI API and instead is done by storing the question and responses in an array and asking OpenAI to generate a stand alone question (See: https://github.com/cosmeoes/ask-the-laravel-docs/blob/c4b7891bdcb8dc07c72535964ae758270be1a7bb/src/AskDocs.php#L47-L66). We then use that question to query the vector database and use that to get OpenAI's response.
+    That is the basic flow for the first question. But if you ask multiple questions you will notice that the chat "remembers" what you typed previously, this is not a feature of the OpenAI API and instead is done by storing the question and responses in an array and asking OpenAI to generate a stand alone question (you can see the [code here](https://github.com/cosmeoes/ask-the-laravel-docs/blob/c4b7891bdcb8dc07c72535964ae758270be1a7bb/src/AskDocs.php#L47-L66)). We then use that question to query the vector database and use that to get OpenAI's response.
 
 
 And that's it, that's the gist of how it all works, you probably should read this as you read the code and it will all make more sense, if you have any other questions you can ask me on tweeter [@cosmeescobedo](https://twitter.com/cosmeescobedo) or send me an email at cosme@cosme.dev
